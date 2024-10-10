@@ -1,0 +1,139 @@
+import mysql.connector #Para importar la conexión de MySQl
+import qrcode
+import qrcode.image.svg
+import time
+
+print("Bienvenido a Esmeralda's Boulevard")
+print("Por favor llena el siguiente formulario")
+
+
+#Ingreso de los datos del usuario
+print("Datos de Usuario")
+print()
+name = input(f"Ingresa tu nombre: ")                #name = Nombre del usuario
+date = input(f"Ingresa tu año de nacimiento: ")     #date = Año de nacimiento
+cel  = input(f"Ingresa tu número de teléfono: ")    #cel = Número de celular
+mail = input(f"Ingresa tu correo electrónico: ")    #mail = Correo electrónico      
+print()
+
+
+
+
+#Ingreso de los datos de los vehículos
+print("Datos del vehículo")
+print()
+vehicle_type = input(f"Su vehículo es un carro o una moto?: ")  #Reconociendo el tipo de vehículo
+brand = input(f"Ingresa la marca de tu vehículo: ")             #brand = El fabricante del vehículo
+mod   = input(f"Ingresa el modelo de tu vehículo: ")            #mod = Modelo del vehículo
+date  = input(f"Ingresa el año de tu vehículo: ")               #dat = date = Año del vehículo
+col   = input(f"Ingresa el color de tu vehículo: ")             #col = Color del vehículo
+plate = input(str(f"Ingresa la placa del vehículo: "))          #plate = Número de placa
+#Definiendo el tipo de vehículo
+if vehicle_type == "Carro" or "carro":
+    vehicle_type = 1
+else:
+    vehicle_type = 2
+    
+if vehicle_type==1:
+    vehicle=("Carro")
+else:
+    vehicle=("Moto")
+print()
+
+
+
+
+#Anclaje a la base de datos
+conexion1=mysql.connector.connect(host="localhost", user="root", passwd="", database="parqueo") #La manera en que se conecta a la base de datos, siendo localhost la conexión, root el usuario por defecto y passwd la contra que por defecto está vacía.
+cursor1=conexion1.cursor()                                                                      #La manera en que vamos a movernos por la interfaz de la base de datos
+                                                                                                #cursor1.execute("show databases")   #Usando el comando para mostrar las bases de datos.
+#for base in cursor1:
+#print(base)
+#conexion1.close() Siendo utilizada esta función para cerrar la conexión   
+sql="insert into parking_z1(Colour, Date, Manufacturer, Model, Plate, Type) values (%s,%s,%s,%s,%s,%s)" #Para insertar los valores en la base de datos en orden y modificarlos
+datos=(f"{col}",f"{date}",f"{brand}",f"{mod}",f"{plate}",f"{vehicle}")
+cursor1.execute(sql, datos)                                                                     #Para ejecutar el comando
+conexion1.commit()                                                                              #Para confirmar el comando y los datos ingresados
+
+
+
+
+#Horarios de atencion del parqueo
+print("Nuestros horarios disponibles son:")
+print(f"Lunes a Viernes: 5:00 am a 00:00 am")
+print(f"Sabados y Domingos: 7:00 am a 9:00 pm")
+print(f"Por favor tome en cuenta sus tiempos.")
+print(f"El parqueo de su vehículo tendrá un costo por hora.")#horas = Horas del parking           
+print()
+print("Redirigiendo al método de pago")
+print()
+
+
+
+
+#Forma de pago
+def Payment():
+    while True:
+        try:
+            print("Por favor ingresa el método de pago")
+            print("Utiliza el teclado para escoger")
+            print()
+            print("Opcion 1: Tarjeta de Crédito")
+            print("Opcion 2: Tarjeta de Débito")
+            print("Opcion 3: Efectivo")
+            print("Opcion 4: Cupones")
+            print()
+            payment_choice = int(input())
+            
+            if payment_choice == 1:
+                print("Por favor, ingresa los dígitos de tu tarjeta de crédito:")
+                cc_number = int(input())
+                print("Ahora ingresa el nombre de la tarjeta de crédito")
+                cc_name = input()
+                print("Ahora ingresa la fecha de vencimiento de la tarjeta de crédito")
+                cc_expire = int(input())
+                print("Por ultimo ingresa el codigo CVC de tu tarjeta de crédito")
+                cc_cvc = int(input())
+                break
+
+            elif payment_choice == 2:
+                print("Por favor, ingresa los dígitos de tu tarjeta de débito:")
+                cc_number = int(input())
+                print("Ahora ingresa el nombre de la tarjeta de débito")
+                cc_name = input()
+                print("Ahora ingresa la fecha de vencimiento de la tarjeta de débito")
+                cc_expire = int(input())
+                print("Por ultimo ingresa el codigo CVC de tu tarjeta de débito")
+                cc_cvc = int(input())
+                break
+
+            elif payment_choice == 3:
+                print("El monto a pagar en efectivo es de: ")
+                break
+
+            elif payment_choice == 4:
+                print("Por favor, ingresa el código de tu cupon")
+                coupon_code = int(input())
+                print()
+                print("Tu cupón es válido")
+                break
+                
+            else:
+                print("Por favor vuelve a ingresar un valor")
+                return credit_card
+
+
+        except Exception:
+            print("Error 0xc00, Por favor verifica que los datos ingresados sean correcots")
+Payment()
+print("Espera un momento en lo que se efectúa la transacción...")
+time.sleep(3)  # Espera 3 segundos
+print()
+print("El procedimiento ha sido exitoso")
+
+
+
+#Generación del QR
+img = qrcode.make('Some data here')
+type(img)  # qrcode.image.pil.PilImage
+img.save("some_file.png")
